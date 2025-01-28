@@ -1,5 +1,3 @@
-import PropTypes from "prop-types";
-
 const Hero = ({
   title = "Become a React Dev",
   subtitle = "Find the React job that fits your skills and needs",
@@ -19,12 +17,6 @@ const Hero = ({
       </section>
     </>
   );
-};
-
-// PropTypes validation
-Hero.propTypes = {
-  title: PropTypes.string.isRequired,
-  subtitle: PropTypes.string.isRequired,
 };
 
 export default Hero;
