@@ -22,7 +22,7 @@ const JobListings = ({ isHome = false }) => {
       }
     };
     fetchJobs();
-  }, []);
+  }, [isHome]);
 
   return (
     <>
