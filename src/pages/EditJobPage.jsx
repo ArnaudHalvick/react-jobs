@@ -39,7 +39,7 @@ const EditJobPage = ({ onUpdate }) => {
     try {
       await onUpdate(job.id, updatedJob);
       toast.success("Job updated successfully");
-      navigate("/jobs");
+      navigate(`/jobs/${job.id}`);
     } catch (error) {
       console.error("Error updating job:", error);
       toast.error("Failed to update job. Please try again.");
