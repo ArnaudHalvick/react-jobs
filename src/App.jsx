@@ -52,7 +52,15 @@ const App = () => {
   };
 
   const updateJob = async (jobId, updatedJob) => {
-    console.log(jobId, updatedJob);
+    const response = await fetch(`/api/jobs/${jobId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedJob),
+    });
+    const data = await response.json();
+    setJobs(jobs.map((job) => (job.id === jobId ? data : job)));
   };
 
   const router = createBrowserRouter(
