@@ -64,10 +64,12 @@ const App = () => {
     try {
       const jobRef = doc(db, "jobs", jobId);
       await deleteDoc(jobRef);
+      // Update local state to remove the job immediately
+      setJobs((prevJobs) => prevJobs.filter((job) => job.id !== jobId));
       return true;
     } catch (error) {
       console.error("Error deleting job:", error);
-      return false;
+      throw error; // Propagate the error to be handled by the component
     }
   };
 

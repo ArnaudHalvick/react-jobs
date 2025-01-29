@@ -1,20 +1,28 @@
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useState } from "react";
 
 const JobPage = ({ onDelete }) => {
   const job = useLoaderData();
   const navigate = useNavigate();
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
-    if (window.confirm("Are you sure you want to delete this job?")) {
-      const success = await onDelete(job.id);
+    if (!window.confirm("Are you sure you want to delete this job?")) {
+      return;
+    }
 
-      if (success) {
-        toast.success("Job deleted successfully");
-        navigate("/jobs");
-      } else {
-        toast.error("Failed to delete job. Please try again.");
-      }
+    setIsDeleting(true);
+    try {
+      navigate("/jobs", { replace: true });
+      await onDelete(job.id);
+      toast.success("Job deleted successfully");
+    } catch (error) {
+      console.error("Error deleting job:", error);
+      toast.error("Failed to delete job. Please try again.");
+      navigate(`/jobs/${job.id}`);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -89,17 +97,19 @@ const JobPage = ({ onDelete }) => {
               {/* Manage */}
               <div className="bg-white p-6 rounded-lg shadow-md mt-6">
                 <h3 className="text-xl font-bold mb-6">Manage Job</h3>
-                <a
-                  href={`/edit-job/${job.id}`}
-                  className="bg-indigo-500 hover:bg-indigo-600 text-white text-center font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block"
+                <button
+                  onClick={() => navigate(`/edit-job/${job.id}`)}
+                  className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block"
+                  disabled={isDeleting}
                 >
                   Edit Job
-                </a>
+                </button>
                 <button
                   onClick={handleDelete}
                   className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block"
+                  disabled={isDeleting}
                 >
-                  Delete Job
+                  {isDeleting ? "Deleting..." : "Delete Job"}
                 </button>
               </div>
             </aside>
