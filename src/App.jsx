@@ -18,6 +18,7 @@ import {
 } from "firebase/firestore";
 
 import MainLayout from "./layouts/MainLayout";
+import ErrorBoundary from "./components/ErrorBoundary";
 import NotFoundPage from "./pages/NotFoundPage";
 import HomePage from "./pages/HomePage";
 import JobsPage from "./pages/JobsPage";
@@ -47,7 +48,6 @@ const App = () => {
     try {
       const jobsRef = collection(db, "jobs");
       const docRef = await addDoc(jobsRef, newJob);
-      // Force a refresh of the jobs list
       const jobSnap = await getDoc(docRef);
       setJobs((prev) => [...prev, { id: docRef.id, ...jobSnap.data() }]);
       return {
@@ -87,21 +87,39 @@ const App = () => {
 
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="/" element={<MainLayout />}>
-        <Route index element={<HomePage jobs={jobs} />} />
-        <Route path="/jobs" element={<JobsPage jobs={jobs} />} />
+      <Route path="/" element={<MainLayout />} errorElement={<ErrorBoundary />}>
+        <Route
+          index
+          element={<HomePage jobs={jobs} />}
+          errorElement={<ErrorBoundary />}
+        />
+        <Route
+          path="/jobs"
+          element={<JobsPage jobs={jobs} />}
+          errorElement={<ErrorBoundary />}
+        />
         <Route
           path="/jobs/:id"
           element={<JobPage onDelete={deleteJob} />}
           loader={jobLoader}
+          errorElement={<ErrorBoundary />}
         />
-        <Route path="/add-job" element={<AddJobPage addJob={addJob} />} />
+        <Route
+          path="/add-job"
+          element={<AddJobPage addJob={addJob} />}
+          errorElement={<ErrorBoundary />}
+        />
         <Route
           path="/edit-job/:id"
           element={<EditJobPage onUpdate={updateJob} />}
           loader={jobLoader}
+          errorElement={<ErrorBoundary />}
         />
-        <Route path="*" element={<NotFoundPage />} />
+        <Route
+          path="*"
+          element={<NotFoundPage />}
+          errorElement={<ErrorBoundary />}
+        />
       </Route>
     )
   );
