@@ -15,7 +15,7 @@ const AddJobPage = ({ addJob }) => {
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newJob = {
@@ -32,10 +32,14 @@ const AddJobPage = ({ addJob }) => {
       },
     };
 
-    addJob(newJob);
-    toast.success("Job added successfully");
-
-    return navigate("/jobs");
+    try {
+      await addJob(newJob);
+      toast.success("Job added successfully");
+      navigate("/jobs");
+    } catch (error) {
+      console.error("Error adding job:", error);
+      toast.error("Failed to add job. Please try again.");
+    }
   };
 
   return (
