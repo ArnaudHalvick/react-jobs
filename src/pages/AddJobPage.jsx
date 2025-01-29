@@ -1,30 +1,38 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const AddJobPage = () => {
+const AddJobPage = ({ addJob }) => {
   const [title, setTitle] = useState("");
   const [type, setType] = useState("Full-Time");
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
   const [salary, setSalary] = useState("Under $50K");
-  const [company, setCompany] = useState("");
+  const [companyName, setCompanyName] = useState("");
   const [companyDescription, setCompanyDescription] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
 
+  const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log({
+
+    const newJob = {
       title,
       type,
       location,
       description,
       salary,
-      company,
-      companyDescription,
-      contactEmail,
-      contactPhone,
-    });
+      company: {
+        name: companyName,
+        description: companyDescription,
+        contactEmail,
+        contactPhone,
+      },
+    };
+
+    addJob(newJob);
+    return navigate("/jobs");
   };
 
   return (
@@ -148,8 +156,8 @@ const AddJobPage = () => {
               <input
                 type="text"
                 id="company"
-                value={company}
-                onChange={(e) => setCompany(e.target.value)}
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)}
                 className="border rounded w-full py-2 px-3"
                 placeholder="Company Name"
               />
