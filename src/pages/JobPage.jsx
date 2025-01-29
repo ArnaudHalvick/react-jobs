@@ -1,4 +1,5 @@
 import { useLoaderData, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const JobPage = ({ onDelete }) => {
   const job = useLoaderData();
@@ -7,10 +8,12 @@ const JobPage = ({ onDelete }) => {
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this job?")) {
       const success = await onDelete(job.id);
+
       if (success) {
+        toast.success("Job deleted successfully");
         navigate("/jobs");
       } else {
-        alert("Failed to delete job. Please try again.");
+        toast.error("Failed to delete job. Please try again.");
       }
     }
   };
