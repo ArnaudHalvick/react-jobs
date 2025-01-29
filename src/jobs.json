@@ -83,20 +83,6 @@
         "contactEmail": "contact@ipsumlorem.com",
         "contactPhone": "555-555-5555"
       }
-    },
-    {
-      "id": "d6e1",
-      "title": "Test job",
-      "type": "Full-Time",
-      "location": "Saturn",
-      "description": "Helloooooo",
-      "salary": "Under $50K",
-      "company": {
-        "name": "Zorgos",
-        "description": "Invade earth",
-        "contactEmail": "arnaud.halvick@gmail.com",
-        "contactPhone": "01123461925"
-      }
     }
   ]
 }

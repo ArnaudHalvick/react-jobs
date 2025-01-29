@@ -1,7 +1,19 @@
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 
-const JobPage = () => {
+const JobPage = ({ onDelete }) => {
   const job = useLoaderData();
+  const navigate = useNavigate();
+
+  const handleDelete = async () => {
+    if (window.confirm("Are you sure you want to delete this job?")) {
+      const success = await onDelete(job.id);
+      if (success) {
+        navigate("/jobs");
+      } else {
+        alert("Failed to delete job. Please try again.");
+      }
+    }
+  };
 
   return (
     <>
@@ -80,7 +92,10 @@ const JobPage = () => {
                 >
                   Edit Job
                 </a>
-                <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block">
+                <button
+                  onClick={handleDelete}
+                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block"
+                >
                   Delete Job
                 </button>
               </div>
