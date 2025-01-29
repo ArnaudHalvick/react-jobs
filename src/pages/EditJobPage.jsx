@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 
 const EditJobPage = ({ onUpdate }) => {
   const job = useLoaderData();
+  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [title, setTitle] = useState(job.title);
   const [type, setType] = useState(job.type);
@@ -17,10 +19,10 @@ const EditJobPage = ({ onUpdate }) => {
   const [contactEmail, setContactEmail] = useState(job.company.contactEmail);
   const [contactPhone, setContactPhone] = useState(job.company.contactPhone);
 
-  const navigate = useNavigate();
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
 
     const updatedJob = {
       title,
@@ -37,12 +39,17 @@ const EditJobPage = ({ onUpdate }) => {
     };
 
     try {
+      // Navigate first (like in delete case)
+      navigate(`/jobs/${job.id}`, { replace: true });
       await onUpdate(job.id, updatedJob);
       toast.success("Job updated successfully");
-      navigate(`/jobs/${job.id}`);
     } catch (error) {
       console.error("Error updating job:", error);
       toast.error("Failed to update job. Please try again.");
+      // Stay on edit page if error
+      navigate(`/edit-job/${job.id}`);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -68,6 +75,7 @@ const EditJobPage = ({ onUpdate }) => {
                 onChange={(e) => setType(e.target.value)}
                 className="border rounded w-full py-2 px-3"
                 required
+                disabled={isSubmitting}
               >
                 <option value="Full-Time">Full-Time</option>
                 <option value="Part-Time">Part-Time</option>
@@ -91,6 +99,7 @@ const EditJobPage = ({ onUpdate }) => {
                 className="border rounded w-full py-2 px-3 mb-2"
                 placeholder="eg. Beautiful Apartment In Miami"
                 required
+                disabled={isSubmitting}
               />
             </div>
 
@@ -108,6 +117,7 @@ const EditJobPage = ({ onUpdate }) => {
                 className="border rounded w-full py-2 px-3"
                 rows="4"
                 placeholder="Add any job duties, expectations, requirements, etc"
+                disabled={isSubmitting}
               />
             </div>
 
@@ -124,6 +134,7 @@ const EditJobPage = ({ onUpdate }) => {
                 onChange={(e) => setSalary(e.target.value)}
                 className="border rounded w-full py-2 px-3"
                 required
+                disabled={isSubmitting}
               >
                 <option value="Under $50K">Under $50K</option>
                 <option value="$50K - 60K">$50K - $60K</option>
@@ -154,6 +165,7 @@ const EditJobPage = ({ onUpdate }) => {
                 className="border rounded w-full py-2 px-3 mb-2"
                 placeholder="Company Location"
                 required
+                disabled={isSubmitting}
               />
             </div>
 
@@ -173,6 +185,7 @@ const EditJobPage = ({ onUpdate }) => {
                 onChange={(e) => setCompanyName(e.target.value)}
                 className="border rounded w-full py-2 px-3"
                 placeholder="Company Name"
+                disabled={isSubmitting}
               />
             </div>
 
@@ -190,6 +203,7 @@ const EditJobPage = ({ onUpdate }) => {
                 className="border rounded w-full py-2 px-3"
                 rows="4"
                 placeholder="What does your company do?"
+                disabled={isSubmitting}
               />
             </div>
 
@@ -208,6 +222,7 @@ const EditJobPage = ({ onUpdate }) => {
                 className="border rounded w-full py-2 px-3"
                 placeholder="Email address for applicants"
                 required
+                disabled={isSubmitting}
               />
             </div>
 
@@ -225,15 +240,17 @@ const EditJobPage = ({ onUpdate }) => {
                 onChange={(e) => setContactPhone(e.target.value)}
                 className="border rounded w-full py-2 px-3"
                 placeholder="Optional phone for applicants"
+                disabled={isSubmitting}
               />
             </div>
 
             <div>
               <button
-                className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
+                className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline disabled:bg-indigo-300"
                 type="submit"
+                disabled={isSubmitting}
               >
-                Confirm Edit
+                {isSubmitting ? "Saving Changes..." : "Save Changes"}
               </button>
             </div>
           </form>
