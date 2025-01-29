@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const AddJobPage = ({ addJob }) => {
@@ -12,11 +11,13 @@ const AddJobPage = ({ addJob }) => {
   const [companyDescription, setCompanyDescription] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
-
-  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
 
     const newJob = {
       title,
@@ -33,12 +34,19 @@ const AddJobPage = ({ addJob }) => {
     };
 
     try {
-      await addJob(newJob);
-      toast.success("Job added successfully");
-      navigate("/jobs");
+      const result = await addJob(newJob);
+      if (result && result.id) {
+        toast.success("Job added successfully");
+        // Use window.location for a full page refresh
+        window.location.href = "/jobs";
+      } else {
+        throw new Error("Failed to create job - no ID returned");
+      }
     } catch (error) {
       console.error("Error adding job:", error);
       toast.error("Failed to add job. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -226,8 +234,9 @@ const AddJobPage = ({ addJob }) => {
               <button
                 className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
                 type="submit"
+                disabled={isSubmitting}
               >
-                Add Job
+                {isSubmitting ? "Adding Job..." : "Add Job"}
               </button>
             </div>
           </form>

@@ -14,6 +14,7 @@ import {
   updateDoc,
   doc,
   onSnapshot,
+  getDoc,
 } from "firebase/firestore";
 
 import MainLayout from "./layouts/MainLayout";
@@ -28,7 +29,6 @@ import { jobLoader } from "./loaders/jobLoader";
 const App = () => {
   const [jobs, setJobs] = useState([]);
 
-  // Subscribe to jobs collection changes
   useEffect(() => {
     const jobsRef = collection(db, "jobs");
 
@@ -40,7 +40,6 @@ const App = () => {
       setJobs(jobsData);
     });
 
-    // Cleanup subscription on unmount
     return () => unsubscribe();
   }, []);
 
@@ -48,8 +47,9 @@ const App = () => {
     try {
       const jobsRef = collection(db, "jobs");
       const docRef = await addDoc(jobsRef, newJob);
-
-      // Return the new job with its ID
+      // Force a refresh of the jobs list
+      const jobSnap = await getDoc(docRef);
+      setJobs((prev) => [...prev, { id: docRef.id, ...jobSnap.data() }]);
       return {
         id: docRef.id,
         ...newJob,
