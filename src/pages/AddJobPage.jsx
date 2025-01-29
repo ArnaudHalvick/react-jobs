@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const AddJobPage = ({ addJob }) => {
+  const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [type, setType] = useState("Full-Time");
   const [location, setLocation] = useState("");
@@ -34,17 +36,17 @@ const AddJobPage = ({ addJob }) => {
     };
 
     try {
+      navigate("/jobs", { replace: true });
       const result = await addJob(newJob);
       if (result && result.id) {
         toast.success("Job added successfully");
-        // Use window.location for a full page refresh
-        window.location.href = "/jobs";
       } else {
         throw new Error("Failed to create job - no ID returned");
       }
     } catch (error) {
       console.error("Error adding job:", error);
       toast.error("Failed to add job. Please try again.");
+      navigate("/add-job");
     } finally {
       setIsSubmitting(false);
     }
@@ -70,6 +72,7 @@ const AddJobPage = ({ addJob }) => {
                 onChange={(e) => setType(e.target.value)}
                 className="border rounded w-full py-2 px-3"
                 required
+                disabled={isSubmitting}
               >
                 <option value="Full-Time">Full-Time</option>
                 <option value="Part-Time">Part-Time</option>
@@ -93,6 +96,7 @@ const AddJobPage = ({ addJob }) => {
                 className="border rounded w-full py-2 px-3 mb-2"
                 placeholder="eg. Beautiful Apartment In Miami"
                 required
+                disabled={isSubmitting}
               />
             </div>
 
@@ -110,6 +114,7 @@ const AddJobPage = ({ addJob }) => {
                 className="border rounded w-full py-2 px-3"
                 rows="4"
                 placeholder="Add any job duties, expectations, requirements, etc"
+                disabled={isSubmitting}
               />
             </div>
 
@@ -126,6 +131,7 @@ const AddJobPage = ({ addJob }) => {
                 onChange={(e) => setSalary(e.target.value)}
                 className="border rounded w-full py-2 px-3"
                 required
+                disabled={isSubmitting}
               >
                 <option value="Under $50K">Under $50K</option>
                 <option value="$50K - 60K">$50K - $60K</option>
@@ -156,6 +162,7 @@ const AddJobPage = ({ addJob }) => {
                 className="border rounded w-full py-2 px-3 mb-2"
                 placeholder="Company Location"
                 required
+                disabled={isSubmitting}
               />
             </div>
 
@@ -175,6 +182,7 @@ const AddJobPage = ({ addJob }) => {
                 onChange={(e) => setCompanyName(e.target.value)}
                 className="border rounded w-full py-2 px-3"
                 placeholder="Company Name"
+                disabled={isSubmitting}
               />
             </div>
 
@@ -192,6 +200,7 @@ const AddJobPage = ({ addJob }) => {
                 className="border rounded w-full py-2 px-3"
                 rows="4"
                 placeholder="What does your company do?"
+                disabled={isSubmitting}
               />
             </div>
 
@@ -210,6 +219,7 @@ const AddJobPage = ({ addJob }) => {
                 className="border rounded w-full py-2 px-3"
                 placeholder="Email address for applicants"
                 required
+                disabled={isSubmitting}
               />
             </div>
 
@@ -227,12 +237,13 @@ const AddJobPage = ({ addJob }) => {
                 onChange={(e) => setContactPhone(e.target.value)}
                 className="border rounded w-full py-2 px-3"
                 placeholder="Optional phone for applicants"
+                disabled={isSubmitting}
               />
             </div>
 
             <div>
               <button
-                className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
+                className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline disabled:bg-indigo-300"
                 type="submit"
                 disabled={isSubmitting}
               >
